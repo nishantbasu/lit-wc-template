@@ -1,27 +1,31 @@
-import { html, css, LitElement } from 'lit';
-import { property } from 'lit/decorators.js';
+import { html, LitElement } from 'lit';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { LitScriptLazyLoaderController } from 'lit-script-lazy-loader';
 
 export class LitBoilerplateWc extends LitElement {
-  static styles = css`
-    :host {
-      display: block;
-      padding: 25px;
-      color: var(--lit-boilerplate-wc-text-color, #000);
-    }
-  `;
+  loader = new LitScriptLazyLoaderController(this, true);
 
-  @property({ type: String }) header = 'Hey there';
+  constructor() {
+    super();
+    this.loader.loadScript(
+      'https://nishantbasu.github.io/single-file-wc/hello-world1.js',
+      {
+        exportedModuleFunction: {
+          functionName: 'defineSuffix',
+          args: ['test'],
+        },
+      }
+    );
+  }
 
-  @property({ type: Number }) counter = 5;
-
-  __increment() {
-    this.counter += 1;
+  shouldUpdate(): boolean {
+    return this.loader.fetchedScript;
   }
 
   render() {
     return html`
-      <h2>${this.header} Nr. ${this.counter}!</h2>
-      <button @click=${this.__increment}>increment</button>
+      <h2>Test Page</h2>
+      <hello-world-test></hello-world-test>
     `;
   }
 }
